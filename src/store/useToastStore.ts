@@ -6,7 +6,7 @@ export interface ToastMessage {
   id: string;
   title: string;
   description?: string;
-  type?: "success" | "info" | "warning";
+  type?: "success" | "info" | "warning" | "error";
 }
 
 interface ToastStore {

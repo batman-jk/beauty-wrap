@@ -20,7 +20,9 @@ export default function ToastContainer() {
             transition={{ duration: 0.25 }}
             className="pointer-events-auto flex items-start gap-3 p-4 rounded-xl bg-[#3A2416] text-[#F6EDE3] shadow-2xl border border-[#A9714B]/30"
           >
-            {toast.type === "info" ? (
+            {toast.type === "error" ? (
+              <span className="w-5 h-5 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">!</span>
+            ) : toast.type === "info" ? (
               <Info className="w-5 h-5 text-[#C9A66B] shrink-0 mt-0.5" />
             ) : (
               <CheckCircle2 className="w-5 h-5 text-[#C9A66B] shrink-0 mt-0.5" />

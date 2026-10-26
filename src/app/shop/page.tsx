@@ -35,7 +35,10 @@ const SORT_OPTIONS = [
   { label: "New Arrivals", value: "newest" },
 ];
 
+import { useLiveProducts } from "@/context/ProductContext";
+
 function ShopInner() {
+  const { products } = useLiveProducts();
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "All";
   const initialSearch = searchParams.get("search") || "";
@@ -50,7 +53,7 @@ function ShopInner() {
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let result = [...PRODUCTS];
+    let result = [...products];
 
     // Search filter
     if (searchQuery.trim()) {
@@ -181,7 +184,7 @@ function ShopInner() {
           </button>
 
           <div className="text-xs text-[#3A2416]/70">
-            Showing <strong className="text-[#3A2416]">{filteredProducts.length}</strong> of {PRODUCTS.length} creations
+            Showing <strong className="text-[#3A2416]">{filteredProducts.length}</strong> of {products.length} creations
           </div>
 
           {/* Sort Dropdown */}

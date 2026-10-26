@@ -27,12 +27,19 @@ import {
   Minus,
 } from "lucide-react";
 
+import { useLiveProducts } from "@/context/ProductContext";
+
 interface Props {
   product: Product;
   relatedProducts: Product[];
 }
 
-export default function ProductDetailClient({ product, relatedProducts }: Props) {
+export default function ProductDetailClient({ product: initialProduct, relatedProducts }: Props) {
+  const { products } = useLiveProducts();
+  const product =
+    products.find((p) => p.slug === initialProduct.slug || p.id === initialProduct.id) ||
+    initialProduct;
+
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>(
     product.sizes ? product.sizes[0] : "Standard"
@@ -247,9 +254,16 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
               </div>
 
               {/* Title */}
-              <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#3A2416] font-light leading-tight">
-                {product.name}
-              </h1>
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-[#3A2416] font-light leading-tight">
+                  {product.name}
+                </h1>
+                {product.inStock === false && (
+                  <span className="shrink-0 bg-[#3A2416] text-[#F6EDE3] text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full shadow-sm border border-[#C9A66B]/30">
+                    Sold Out
+                  </span>
+                )}
+              </div>
 
               {/* Subtitle */}
               <p className="text-xs sm:text-sm text-[#3A2416]/75 mt-2 font-light leading-relaxed">
@@ -340,22 +354,43 @@ export default function ProductDetailClient({ product, relatedProducts }: Props)
 
                 <button
                   type="button"
+                  disabled={product.inStock === false}
                   onClick={handleAddToCart}
-                  className="flex-1 btn-luxury py-3.5 px-6 rounded-xl text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                  className={`flex-1 py-3.5 px-6 rounded-xl text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-lg transition-all ${
+                    product.inStock === false
+                      ? "bg-stone-700/80 text-stone-300 cursor-not-allowed"
+                      : "btn-luxury hover:shadow-xl"
+                  }`}
                 >
-                  <ShoppingBag className="w-4 h-4 text-[#C9A66B]" />
-                  <span>Add To Indulgence Bag • {formatINR(product.price * quantity)}</span>
+                  {product.inStock === false ? (
+                    <span>Currently Sold Out</span>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-4 h-4 text-[#C9A66B]" />
+                      <span>Add To Indulgence Bag • {formatINR(product.price * quantity)}</span>
+                    </>
+                  )}
                 </button>
               </div>
 
               <div className="grid grid-cols-2 gap-2">
-                <Link
-                  href="/checkout"
-                  onClick={() => addItem(product, selectedSize, quantity)}
-                  className="btn-outline-luxury py-2.5 rounded-xl text-center text-xs uppercase tracking-wider font-semibold hover:bg-[#EBD3BE]/60"
-                >
-                  Instant Buy Now
-                </Link>
+                {product.inStock === false ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="py-2.5 rounded-xl text-center text-xs uppercase tracking-wider font-semibold bg-stone-300/60 text-stone-500 cursor-not-allowed border border-stone-300"
+                  >
+                    Sold Out
+                  </button>
+                ) : (
+                  <Link
+                    href="/checkout"
+                    onClick={() => addItem(product, selectedSize, quantity)}
+                    className="btn-outline-luxury py-2.5 rounded-xl text-center text-xs uppercase tracking-wider font-semibold hover:bg-[#EBD3BE]/60"
+                  >
+                    Instant Buy Now
+                  </Link>
+                )}
                 <button
                   type="button"
                   onClick={handleToggleWishlist}

@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, X, ArrowRight, Sparkles } from "lucide-react";
 import { useSearchStore } from "@/store/useSearchStore";
-import { PRODUCTS, formatINR } from "@/data/products";
+import { formatINR } from "@/data/products";
+import { useLiveProducts } from "@/context/ProductContext";
 import { AnimatePresence, motion } from "framer-motion";
 
 const POPULAR_SEARCHES = [
@@ -20,6 +21,7 @@ const POPULAR_SEARCHES = [
 
 export default function SearchOverlay() {
   const { isOpen, closeSearch, searchQuery, setSearchQuery } = useSearchStore();
+  const { products } = useLiveProducts();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function SearchOverlay() {
   }, [isOpen, closeSearch]);
 
   const filteredProducts = searchQuery.trim()
-    ? PRODUCTS.filter((item) => {
+    ? products.filter((item) => {
         const query = searchQuery.toLowerCase();
         return (
           item.name.toLowerCase().includes(query) ||

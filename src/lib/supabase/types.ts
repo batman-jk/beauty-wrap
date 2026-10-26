@@ -17,6 +17,7 @@ export type Database = {
           subtitle: string;
           category: string;
           price: number;
+          discount_price: number | null;
           original_price: number | null;
           discount_percent: number | null;
           material: string;
@@ -24,6 +25,8 @@ export type Database = {
           rating: number;
           reviews_count: number;
           stock: number;
+          in_stock: boolean;
+          is_published: boolean;
           is_bestseller: boolean;
           is_new_arrival: boolean;
           is_featured: boolean;
@@ -34,21 +37,25 @@ export type Database = {
           sizes: string[];
           tags: string[];
           created_at: string;
+          updated_at: string;
         };
         Insert: {
-          id: string;
+          id?: string;
           slug: string;
           name: string;
-          subtitle: string;
+          subtitle?: string;
           category: string;
           price: number;
+          discount_price?: number | null;
           original_price?: number | null;
           discount_percent?: number | null;
-          material: string;
+          material?: string;
           purity?: string | null;
           rating?: number;
           reviews_count?: number;
           stock?: number;
+          in_stock?: boolean;
+          is_published?: boolean;
           is_bestseller?: boolean;
           is_new_arrival?: boolean;
           is_featured?: boolean;
@@ -59,6 +66,7 @@ export type Database = {
           sizes?: string[];
           tags?: string[];
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
@@ -67,6 +75,7 @@ export type Database = {
           subtitle?: string;
           category?: string;
           price?: number;
+          discount_price?: number | null;
           original_price?: number | null;
           discount_percent?: number | null;
           material?: string;
@@ -74,6 +83,8 @@ export type Database = {
           rating?: number;
           reviews_count?: number;
           stock?: number;
+          in_stock?: boolean;
+          is_published?: boolean;
           is_bestseller?: boolean;
           is_new_arrival?: boolean;
           is_featured?: boolean;
@@ -84,6 +95,7 @@ export type Database = {
           sizes?: string[];
           tags?: string[];
           created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };

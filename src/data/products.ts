@@ -26,6 +26,9 @@ export interface Product {
   occasion: "Everyday" | "Cocktail & Party" | "Bridal & Wedding" | "Festive" | "Workwear";
   images: string[];
   description: string;
+  inStock?: boolean;
+  isPublished?: boolean;
+  discountPrice?: number;
   details: {
     dimensions?: string;
     weight?: string;

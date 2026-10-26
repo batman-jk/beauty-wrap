@@ -85,7 +85,12 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
-          {product.discountPercent && product.discountPercent > 0 && (
+          {product.inStock === false && (
+            <span className="bg-[#3A2416] text-[#F6EDE3] text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full shadow-md border border-[#C9A66B]/30">
+              Sold Out
+            </span>
+          )}
+          {product.discountPercent && product.discountPercent > 0 && product.inStock !== false && (
             <span className="bg-[#A9714B] text-[#F6EDE3] text-[10px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-full shadow-xs">
               {product.discountPercent}% Off
             </span>
@@ -121,18 +126,23 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
           />
         </button>
 
-        {/* Quick Add Button Overlay (visible on desktop hover, or compact tap on mobile) */}
+        {/* Quick Add Button Overlay */}
         <div className="absolute inset-x-3 bottom-3 z-10 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hidden sm:block">
           <button
             type="button"
+            disabled={product.inStock === false}
             onClick={handleQuickAdd}
             className={`w-full py-2.5 px-3 rounded-xl text-xs uppercase tracking-widest font-medium transition-all shadow-md flex items-center justify-center gap-2 ${
-              isAdded
+              product.inStock === false
+                ? "bg-stone-700/80 text-stone-300 cursor-not-allowed"
+                : isAdded
                 ? "bg-emerald-700 text-white"
                 : "bg-[#3A2416]/90 hover:bg-[#3A2416] text-[#F6EDE3] backdrop-blur-xs hover:shadow-lg"
             }`}
           >
-            {isAdded ? (
+            {product.inStock === false ? (
+              <span>Sold Out</span>
+            ) : isAdded ? (
               <>
                 <Check className="w-3.5 h-3.5" />
                 <span>Added</span>

@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { PRODUCTS, Product } from "@/data/products";
+import { getProductBySlug, getPublishedProducts } from "@/lib/supabase/services";
 import ProductDetailClient from "./ProductDetailClient";
 
 interface Props {
@@ -16,7 +17,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  let product: Product | undefined | null = PRODUCTS.find((p) => p.slug === slug);
+
+  if (!product) {
+    product = await getProductBySlug(slug);
+  }
 
   if (!product) {
     return {
@@ -32,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: product.description,
       images: [
         {
-          url: product.images[0],
+          url: product.images[0] || "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop",
           width: 800,
           height: 800,
           alt: product.name,
@@ -44,15 +49,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  let product: Product | undefined | null = PRODUCTS.find((p) => p.slug === slug);
+
+  if (!product) {
+    product = await getProductBySlug(slug);
+  }
 
   if (!product) {
     notFound();
   }
 
-  // Related products from same category or random
+  // Related products
   const relatedProducts = PRODUCTS.filter(
-    (p) => p.id !== product.id && (p.category === product.category || p.isBestseller)
+    (p) => p.id !== product!.id && (p.category === product!.category || p.isBestseller)
   ).slice(0, 4);
 
   return <ProductDetailClient product={product} relatedProducts={relatedProducts} />;

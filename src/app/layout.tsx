@@ -1,13 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 import "./globals.css";
-import AnnouncementBar from "@/components/common/AnnouncementBar";
-import Navbar from "@/components/common/Navbar";
-import MobileTabBar from "@/components/common/MobileTabBar";
-import CartDrawer from "@/components/common/CartDrawer";
-import SearchOverlay from "@/components/common/SearchOverlay";
-import ToastContainer from "@/components/common/ToastContainer";
-import Footer from "@/components/common/Footer";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -66,6 +59,8 @@ export const metadata: Metadata = {
   },
 };
 
+import PublicLayoutShell from "@/components/common/PublicLayoutShell";
+
 export default function RootLayout({
   children,
 }: {
@@ -74,23 +69,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${cormorant.variable} ${jost.variable} scroll-smooth`}>
       <body className="min-h-screen flex flex-col bg-[#F6EDE3] text-[#3A2416] antialiased selection:bg-[#EBD3BE] selection:text-[#3A2416]">
-        {/* Top announcement bar */}
-        <AnnouncementBar />
-
-        {/* Sticky luxury navbar */}
-        <Navbar />
-
-        {/* Main Content Area */}
-        <main className="flex-1">{children}</main>
-
-        {/* Luxury Footer */}
-        <Footer />
-
-        {/* Global Overlays & Drawers */}
-        <CartDrawer />
-        <SearchOverlay />
-        <MobileTabBar />
-        <ToastContainer />
+        <PublicLayoutShell>{children}</PublicLayoutShell>
       </body>
     </html>
   );

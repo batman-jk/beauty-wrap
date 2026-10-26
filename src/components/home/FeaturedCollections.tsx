@@ -2,25 +2,26 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { PRODUCTS } from "@/data/products";
 import ProductCard from "@/components/product/ProductCard";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useLiveProducts } from "@/context/ProductContext";
 
 type TabType = "bestsellers" | "newArrivals" | "bridal";
 
 export default function FeaturedCollections() {
   const [activeTab, setActiveTab] = useState<TabType>("bestsellers");
+  const { products } = useLiveProducts();
 
-  const bestsellers = PRODUCTS.filter((p) => p.isBestseller).slice(0, 4);
-  const newArrivals = PRODUCTS.filter((p) => p.isNewArrival).slice(0, 4);
-  const bridal = PRODUCTS.filter((p) => p.category === "Bridal Sets" || p.occasion === "Bridal & Wedding").slice(0, 4);
+  const bestsellers = products.filter((p) => p.isBestseller).slice(0, 4);
+  const newArrivals = products.filter((p) => p.isNewArrival).slice(0, 4);
+  const bridal = products.filter((p) => p.category === "Bridal Sets" || p.occasion === "Bridal & Wedding").slice(0, 4);
 
   const displayProducts =
     activeTab === "bestsellers"
-      ? bestsellers
+      ? (bestsellers.length > 0 ? bestsellers : products.slice(0, 4))
       : activeTab === "newArrivals"
-      ? newArrivals
-      : bridal;
+      ? (newArrivals.length > 0 ? newArrivals : products.slice(0, 4))
+      : (bridal.length > 0 ? bridal : products.slice(0, 4));
 
   return (
     <section className="py-16 sm:py-20 bg-[#F6EDE3]/60 border-b border-[#A9714B]/15">
