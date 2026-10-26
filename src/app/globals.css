@@ -1,26 +1,145 @@
 @import "tailwindcss";
 
+@theme {
+  --color-sand: #F6EDE3;
+  --color-nude: #EBD3BE;
+  --color-skintone: #D9A98A;
+  --color-bronze: #A9714B;
+  --color-bronze-dark: #7A4A2B;
+  --color-espresso: #3A2416;
+  --color-champagne: #C9A66B;
+  
+  --color-brand-sand: #F6EDE3;
+  --color-brand-nude: #EBD3BE;
+  --color-brand-skintone: #D9A98A;
+  --color-brand-bronze: #A9714B;
+  --color-brand-deepbronze: #7A4A2B;
+  --color-brand-espresso: #3A2416;
+  --color-brand-champagne: #C9A66B;
+
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Garamond, Georgia, serif;
+  --font-sans: var(--font-jost), "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #F6EDE3;
+  --foreground: #3A2416;
+  --sand: #F6EDE3;
+  --nude: #EBD3BE;
+  --skintone: #D9A98A;
+  --bronze: #A9714B;
+  --bronze-dark: #7A4A2B;
+  --espresso: #3A2416;
+  --champagne: #C9A66B;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #F6EDE3;
+  color: #3A2416;
+  font-family: var(--font-jost), "Jost", sans-serif;
+  overflow-x: hidden;
+  selection-background-color: #D9A98A;
+  selection-color: #3A2416;
+}
+
+::selection {
+  background-color: #EBD3BE;
+  color: #3A2416;
+}
+
+/* Custom quiet luxury scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F6EDE3;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9A98A;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A9714B;
+}
+
+/* Luxury button shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.btn-luxury {
+  background: linear-gradient(135deg, #A9714B 0%, #7A4A2B 100%);
+  color: #F6EDE3;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-luxury::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent,
+    rgba(201, 166, 107, 0.25),
+    transparent
+  );
+  transform: rotate(30deg);
+  transition: transform 0.75s ease;
+}
+
+.btn-luxury:hover::after {
+  transform: rotate(30deg) translate(50%, 50%);
+}
+
+.btn-luxury:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px rgba(122, 74, 43, 0.35);
+}
+
+.btn-outline-luxury {
+  border: 1px solid #A9714B;
+  color: #3A2416;
+  background-color: transparent;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-outline-luxury:hover {
+  background-color: rgba(169, 113, 75, 0.1);
+  border-color: #7A4A2B;
+}
+
+.card-luxury {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(169, 113, 75, 0.15);
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px -2px rgba(58, 36, 22, 0.05);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-luxury:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px -8px rgba(122, 74, 43, 0.15);
+  border-color: rgba(169, 113, 75, 0.3);
+}
+
+/* Smooth fade in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
 }
