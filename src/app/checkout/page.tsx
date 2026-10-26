@@ -17,6 +17,7 @@ import {
 import { useCartStore } from "@/store/useCartStore";
 import { formatINR } from "@/data/products";
 import confetti from "canvas-confetti";
+import { recordOrder } from "@/lib/supabase";
 
 export default function CheckoutPage() {
   const { items, getSubtotal, discountRate, promoCode, clearCart } = useCartStore();
@@ -50,30 +51,57 @@ export default function CheckoutPage() {
   const shippingFee = subtotal >= 1999 || subtotal === 0 ? 0 : 150;
   const grandTotal = subtotal - discountAmount + shippingFee;
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      const generatedOrder = `HBW-${Math.floor(100000 + Math.random() * 900000)}`;
-      setOrderNumber(generatedOrder);
-      setIsSubmitting(false);
-      setOrderComplete(true);
+    const generatedOrder = `HBW-${Math.floor(100000 + Math.random() * 900000)}`;
 
-      // Trigger celebration confetti
-      try {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          colors: ["#A9714B", "#C9A66B", "#D9A98A", "#EBD3BE"],
-        });
-      } catch (err) {
-        console.error(err);
-      }
+    try {
+      await recordOrder({
+        orderNumber: generatedOrder,
+        customerName: `${formData.firstName} ${formData.lastName}`.trim(),
+        customerEmail: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        paymentMethod,
+        subtotal,
+        discountAmount,
+        shippingFee,
+        grandTotal,
+        items: items.map((item) => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          selectedSize: item.selectedSize,
+          imageUrl: item.product.images[0],
+        })),
+      });
+    } catch (err) {
+      console.warn("Order record notice:", err);
+    }
 
-      clearCart();
-    }, 1500);
+    setOrderNumber(generatedOrder);
+    setIsSubmitting(false);
+    setOrderComplete(true);
+
+    // Trigger celebration confetti
+    try {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ["#A9714B", "#C9A66B", "#D9A98A", "#EBD3BE"],
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
+    clearCart();
   };
 
   if (!mounted) {

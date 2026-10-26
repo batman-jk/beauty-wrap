@@ -3,22 +3,32 @@
 import React, { useState } from "react";
 import { Sparkles, Mail, CheckCircle2 } from "lucide-react";
 import { useToastStore } from "@/store/useToastStore";
+import { subscribeNewsletter } from "@/lib/supabase";
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { addToast } = useToastStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || isSubmitting) return;
 
-    setIsSubmitted(true);
-    addToast({
-      title: "Welcome to The Muse Circle",
-      description: "Use code HERLUXE at checkout for 10% off your first purchase.",
-      type: "success",
-    });
+    setIsSubmitting(true);
+    try {
+      await subscribeNewsletter(email);
+    } catch (err) {
+      console.warn("Newsletter subscription notice:", err);
+    } finally {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      addToast({
+        title: "Welcome to The Muse Circle",
+        description: "Use code HERLUXE at checkout for 10% off your first purchase.",
+        type: "success",
+      });
+    }
   };
 
   return (
@@ -65,9 +75,10 @@ export default function NewsletterSection() {
             </div>
             <button
               type="submit"
-              className="btn-luxury px-7 py-3 rounded-full text-xs uppercase tracking-widest font-semibold shrink-0 shadow-md"
+              disabled={isSubmitting}
+              className="btn-luxury px-7 py-3 rounded-full text-xs uppercase tracking-widest font-semibold shrink-0 shadow-md disabled:opacity-75"
             >
-              Request Access
+              {isSubmitting ? "Subscribing..." : "Request Access"}
             </button>
           </form>
         )}

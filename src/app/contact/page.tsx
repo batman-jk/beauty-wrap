@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Sparkles, MessageCircle, Clock, CheckCircle } from "lucide-react";
 import { useToastStore } from "@/store/useToastStore";
+import { submitContactInquiry } from "@/lib/supabase";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -11,17 +12,27 @@ export default function ContactPage() {
     subject: "Bespoke Bridal Styling",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { addToast } = useToastStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    addToast({
-      title: "Concierge Request Received",
-      description: "Our jewelry stylist will contact you within 4 hours.",
-      type: "success",
-    });
+    setIsSubmitting(true);
+
+    try {
+      await submitContactInquiry(formData);
+    } catch (err) {
+      console.warn("Contact inquiry submission note:", err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+      addToast({
+        title: "Concierge Request Received",
+        description: "Our jewelry stylist will contact you within 4 hours.",
+        type: "success",
+      });
+    }
   };
 
   return (
@@ -201,9 +212,14 @@ export default function ContactPage() {
 
                   <button
                     type="submit"
-                    className="w-full btn-luxury py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold shadow-md"
+                    disabled={isSubmitting}
+                    className="w-full btn-luxury py-3.5 rounded-xl text-xs uppercase tracking-widest font-semibold shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
                   >
-                    Submit Concierge Request
+                    {isSubmitting ? (
+                      <span>Sending to Atelier...</span>
+                    ) : (
+                      <span>Submit Concierge Request</span>
+                    )}
                   </button>
                 </form>
               )}
